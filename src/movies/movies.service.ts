@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { Repository } from 'typeorm/repository/Repository';
@@ -15,7 +19,7 @@ export class MoviesService {
 
   async createMovie(createMovieDto: CreateMovieDto): Promise<Movie> {
     try {
-      const newMovie = this.moviesRepository.create({
+      const newMovie = await this.moviesRepository.create({
         ...createMovieDto,
       });
       const savedMovie = await this.moviesRepository.save(newMovie);
@@ -39,11 +43,33 @@ export class MoviesService {
     });
   }
 
-  update(id: number, updateMovieDto: UpdateMovieDto) {
-    return `This action updates a #${id} movie`;
+  async update(
+    movieId: number,
+    updateMovieDto: UpdateMovieDto,
+  ): Promise<Movie> {
+    try {
+      const movie = await this.moviesRepository.findOneBy({ movieId });
+
+      if (!movie) {
+        throw new UnauthorizedException('Movie not found');
+      }
+      await this.moviesRepository.update(movieId, updateMovieDto);
+      const updatedMovie = await this.moviesRepository.findOneBy({ movieId });
+      return updatedMovie;
+    } catch (error) {
+      if (error.code === 'ER_DUP_ENTRY') {
+        throw new BadRequestException('Somethig error');
+      }
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} movie`;
+  async remove(movieId: number): Promise<Movie> {
+    const movie = await this.moviesRepository.findOneBy({ movieId });
+    if (!movie) {
+      throw new BadRequestException('Movie not found');
+    } else {
+      await this.moviesRepository.delete(movieId);
+      return movie;
+    }
   }
 }

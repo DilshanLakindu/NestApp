@@ -46,8 +46,9 @@ export class UserController {
     //   throw new BadRequestException('Invalid credantials / password mismatch');
     // }
 
-    const jwt = await this.jwtService.signAsync({ id: user.id });
+    const jwt = this.jwtService.sign({ id: user.id });
     response.cookie('jwt', jwt, { httpOnly: true });
+
     return {
       message: 'Successfully signed',
     };
