@@ -28,6 +28,12 @@ export class AuthController {
     return await this.authService.signUp(body);
   }
 
+  @Post('/logout')
+  async logOut(@Req() request, @Res() response) {
+    request.clearCookie('access_token');
+    response.send('Logged out');
+  }
+
   // @UseGuards(GoogleAuthGuard)
   // @Get('/google/login')
   // async logout(@Req() req: Request) {

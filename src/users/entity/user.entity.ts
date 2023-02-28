@@ -6,7 +6,7 @@ import {
   BaseEntity,
   UpdateDateColumn,
 } from 'typeorm';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 @Entity('users')
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()

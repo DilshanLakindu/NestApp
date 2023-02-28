@@ -25,15 +25,6 @@ import { AuthModule } from './auth/auth.module';
       autoLoadEntities: true,
     }),
     MoviesModule,
-    // JwtModule.register({
-    //   secret: 'YOUR_SECRET_KEY',
-    //   signOptions: { expiresIn: '30000s' },
-    // }),
   ],
-
-  // providers: [JwtService, AuthService, JwtStrategy],
-
-  // providers: [AuthService, JwtStrategy],
-  // exports: [AuthService],
 })
 export class AppModule {}

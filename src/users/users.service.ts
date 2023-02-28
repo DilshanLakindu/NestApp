@@ -82,7 +82,7 @@ export class UserService {
       // Check if the user is allowed to delete the User
       //   const ability = this.caslPermission.defineAbility(user);
       //   ForbiddenError.from(ability).throwUnlessCan(Actions.Delete, user);
-      // Delete the user
+      // Delete the user8
       await this.usersRepository.delete(id);
       // Return the deleted user
       return user;

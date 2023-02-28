@@ -8,15 +8,13 @@ import {
   Delete,
   Req,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { User } from 'src/users/entity/user.entity';
 import { Movie } from './entities/movie.entity';
-import { JwtService } from '@nestjs/jwt';
-import { title } from 'process';
-// import { jwtAuthGuard } from 'src/auth/guards/authGuard/jwt.guard';
 import { Request } from 'express';
 import { jwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
@@ -24,8 +22,8 @@ import { jwtAuthGuard } from 'src/auth/guards/jwt.guard';
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
+  @UseGuards(jwtAuthGuard)
   @Post('postMovie')
-  // @UseGuards(jwtAuthGuard)
   async create(
     @Body() createMovieDto: CreateMovieDto,
     @Req() req: Request,
@@ -41,11 +39,14 @@ export class MoviesController {
 
   @Get(':id')
   findOne(@Param('id') movieId: number) {
-    return this.moviesService.findOne(movieId);
+    const movie = this.moviesService.findOne(movieId);
+    if (!movie) {
+      throw new BadRequestException('Movie not found');
+    }
   }
 
+  @UseGuards(jwtAuthGuard)
   @Patch(':id')
-  // @UseGuards(jwtAuthGuard)
   async update(
     @Param('id') movieId: number,
     @Body() updateMovieDto: UpdateMovieDto,
@@ -54,8 +55,8 @@ export class MoviesController {
     return await this.moviesService.update(movieId, updateMovieDto);
   }
 
+  @UseGuards(jwtAuthGuard)
   @Delete(':id')
-  // @UseGuards(jwtAuthGuard)
   async remove(@Param('id') movieId: number, @Req() req: Request) {
     try {
       await this.moviesService.remove(movieId);

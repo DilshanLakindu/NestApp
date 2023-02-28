@@ -8,7 +8,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/entity/user.entity';
-
+import * as cookieParser from 'cookie-parser';
 @Global()
 @Module({
   imports: [
@@ -20,6 +20,7 @@ import { User } from '../users/entity/user.entity';
       signOptions: { expiresIn: '360000s' },
     }),
   ],
+
   providers: [AuthService, JwtStrategy, LocalStrategy],
   controllers: [AuthController],
   exports: [AuthService],
